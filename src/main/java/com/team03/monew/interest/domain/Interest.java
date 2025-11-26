@@ -46,16 +46,16 @@ public class Interest {
         this.subscribeCount = 0;
     }
 
-    void keywordAdd(String keyword) {this.keywords.add(keyword);}
+    public void keywordAdd(String keyword) {this.keywords.add(keyword);}
 
-    void keywordRemove(String keyword) { this.keywords.remove(keyword); }
+    public void keywordRemove(String keyword) { this.keywords.remove(keyword); }
 
-    void subscribeAdd() {this.subscribeCount = this.subscribeCount + 1; }
+    public void subscribeAdd() {this.subscribeCount = this.subscribeCount + 1; }
 
-    void subscribeRemove() {this.subscribeCount = this.subscribeCount - 1; }
+    public void subscribeRemove() {this.subscribeCount = this.subscribeCount - 1; }
     
     //관심사 유사도 검사 메소드
-    boolean nameEquals(String name) {
+    public boolean nameEquals(String name) {
         int nameLength = this.name.length();
         int targetLength = name.length();
         return name.contains(this.name) && (targetLength * 0.8) <= nameLength;
