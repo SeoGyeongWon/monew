@@ -1,8 +1,10 @@
 package com.team03.monew.interest.domain;
 
+import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -21,7 +23,7 @@ public class Interest {
     @Column(length = 100)
     private String name;
 
-
+    @Type(ListArrayType.class)
     @Column(columnDefinition = "varchar(100)[]")
     private List<String> keywords;
 
