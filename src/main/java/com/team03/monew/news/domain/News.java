@@ -17,11 +17,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jspecify.annotations.NullMarked;
 
 //jspecify의 nullmarked 사용하여 별도의 null여부 없으면 모두 nonNull로 간주
 @Entity
-@NullMarked
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "news")
@@ -33,7 +31,7 @@ public class News {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "source")
-  private NewsSource source;
+  private NewsSourceType source;
 
   @Column(name = "resourceLink")
   private String resourceLink;
@@ -47,10 +45,10 @@ public class News {
   @Column(name = "overview")
   private String overview;
 
-  @Column(name = "viewCount")
+  @Column(name = "viewCount",columnDefinition = "INTEGER DEFAULT 0")
   private int viewCount;
 
-  @Column(name = "creationAt")
+  @Column(name = "creationAt", updatable = false)
   private LocalDateTime createdAt;
 
   @Column(name = "updatedAt",nullable = true)
@@ -59,7 +57,7 @@ public class News {
 
   @Builder
   public News(
-      NewsSource source,
+      NewsSourceType source,
       String resourceLink,
       String title,
       Date postDate,
