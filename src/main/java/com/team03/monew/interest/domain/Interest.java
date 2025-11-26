@@ -4,6 +4,7 @@ import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,15 +21,16 @@ public class Interest {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String name;
 
     @Type(ListArrayType.class)
-    @Column(columnDefinition = "varchar(100)[]")
+    @Column(columnDefinition = "varchar(50)[] NOT NULL")
     private List<String> keywords;
 
-    @Column(length = 100)
+    @ColumnDefault("0")
     private int subscribeCount;
+
     @CreatedDate
     private Instant createdAt;
 
@@ -44,9 +46,7 @@ public class Interest {
         this.subscribeCount = 0;
     }
 
-    void keywordAdd(String keyword) {
-        this.keywords.add(keyword);
-    }
+    void keywordAdd(String keyword) {this.keywords.add(keyword);}
 
     void keywordRemove(String keyword) { this.keywords.remove(keyword); }
 
