@@ -36,11 +36,11 @@ public class Notification {
     private boolean isChecked;
 
     @CreationTimestamp
-    @Column(name = "creationAt", nullable = false, updatable = false)
+    @Column(name = "creationAt", updatable = false)
     private LocalDateTime creationAt;
 
     @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
+    @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 
     private Notification(

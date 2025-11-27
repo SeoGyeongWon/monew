@@ -26,7 +26,6 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
                 .selectFrom(notification)
                 .where(
                         notification.userId.eq(userId),
-                        notification.isChecked.eq(false),
                         notification.creationAt.lt(cursor)
                 )
                 .orderBy(notification.creationAt.desc())
@@ -41,8 +40,7 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
         List<Notification> notifications = queryFactory
                 .selectFrom(notification)
                 .where(
-                        notification.userId.eq(userId),
-                        notification.isChecked.eq(false)
+                        notification.userId.eq(userId)
                 )
                 .orderBy(notification.creationAt.desc())
                 .limit(size + 1)

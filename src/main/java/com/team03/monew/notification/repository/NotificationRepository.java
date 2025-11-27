@@ -26,4 +26,12 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     int markAllAsChecked(
             @Param("userId") UUID userId
     );
+
+    // 미확인 알림 한 번에 확인 처리
+    @Modifying
+    @Query("UPDATE Notification n SET n.isChecked = true WHERE n.userId = :userId AND n.id = :id AND n.isChecked = false")
+    int markAsChecked(
+            @Param("id") UUID id,
+            @Param("userId") UUID userId
+    );
 }
