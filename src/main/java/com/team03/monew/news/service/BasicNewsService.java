@@ -19,6 +19,27 @@ public class BasicNewsService implements NewsService {
 
   @Override
   public NewsResponseDto createNews(NewsCreateRequest newsCreateRequest) {
-    return null;
+
+    //엔티티
+    News news = News.builder()
+        .source(newsCreateRequest.source())
+        .resourceLink(newsCreateRequest.resourceLink())
+        .title(newsCreateRequest.title())
+        .postDate(LocalDateTime.parse(newsCreateRequest.postDate()))
+        .overview(newsCreateRequest.overView())
+        .build();
+
+    //저장
+    News savedNews = newsRepository.save(news);
+
+    //dto변환
+    return new NewsResponseDto(
+        savedNews.getArticleId(),
+        savedNews.getSource(),
+        savedNews.getResourceLink(),
+        savedNews.getTitle(),
+        savedNews.getPostDate(),
+        savedNews.getOverview()
+    );
   }
 }
