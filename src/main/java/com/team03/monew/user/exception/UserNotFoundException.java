@@ -1,12 +1,15 @@
-package com.team03.monew.common.exception;
+package com.team03.monew.user.exception;
+
+
+
 
 public class UserNotFoundException extends BusinessException {
 
     public UserNotFoundException(){
-        super(ErrorCode.USER_NOT_FOUND);
+        super(UserErrorCode.USER_NOT_FOUND);
     }
 
     public UserNotFoundException(String message){
-        super(ErrorCode.USER_NOT_FOUND, message);
+        super(UserErrorCode.USER_NOT_FOUND, message);
     }
 }
