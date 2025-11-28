@@ -1,4 +1,4 @@
-package com.team03.monew.news.domain;
+package com.team03.monew.articleView;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
