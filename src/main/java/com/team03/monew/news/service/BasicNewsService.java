@@ -33,13 +33,6 @@ public class BasicNewsService implements NewsService {
     News savedNews = newsRepository.save(news);
 
     //dto변환
-    return new NewsResponseDto(
-        savedNews.getArticleId(),
-        savedNews.getSource(),
-        savedNews.getResourceLink(),
-        savedNews.getTitle(),
-        savedNews.getPostDate(),
-        savedNews.getOverview()
-    );
+    return NewsResponseDto.from(savedNews);
   }
 }
