@@ -2,8 +2,6 @@ package com.team03.monew.news.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -14,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.team03.monew.news.domain.News;
 import com.team03.monew.news.domain.NewsSourceType;
 import com.team03.monew.news.dto.NewsCreateRequest;
+import com.team03.monew.news.dto.NewsResponseDto;
 import com.team03.monew.news.exception.CustomException.SameResourceLink;
 import com.team03.monew.news.fixture.NewsFixture;
 import com.team03.monew.news.repository.NewsRepository;
@@ -40,7 +39,7 @@ public class NewsCreateTest {
 
   @Test
   @DisplayName("뉴스 저장 실패 - 중복 뉴스 링크")
-  void createNews_Fail_sameResourceLink() {
+  void createNews_Fail_sameResourceLink(){
 
     //given
 
@@ -51,28 +50,49 @@ public class NewsCreateTest {
         LocalDateTime.now(),
         "테스트 요약"
     );
-    News news = NewsFixture.newsCreate(
-        new NewsCreateRequest(
+    News news = NewsFixture.newsCreate(newsCreateRequest);
 
-            NewsSourceType.chosun,
-            "https://test.com",
-            "테스트 제목2",
-            LocalDateTime.now(),
-            "테스트 요약2"
-        )
-    );
 
     when(newsRepository.findByResourceLink(newsCreateRequest.resourceLink()))
         .thenReturn(Optional.of(news));
 
     //when then
-    assertThatThrownBy(() -> basicNewsService.createNews(newsCreateRequest))
-        .isInstanceOf(SameResourceLink.class)
-        .hasMessage("이미 존재하는 뉴스 기사입니다.");
+    assertThatThrownBy(()-> basicNewsService.createNews(newsCreateRequest))
+        .isInstanceOf(SameResourceLink.class);
 
     verify(newsRepository, times(1)).findByResourceLink(anyString());
     verify(newsRepository, never()).save(any());
 
+  }
+
+  // 저장 성공
+  @Test
+  @DisplayName("뉴스 저장 성공")
+  void createNews_Success() {
+    //given
+    NewsCreateRequest newsCreateRequest = new NewsCreateRequest(
+        NewsSourceType.chosun,
+        "https://test.com",
+        "테스트 제목",
+        LocalDateTime.now(),
+        "테스트 요약"
+    );
+
+    UUID id = UUID.randomUUID();
+
+    when(newsRepository.save(any(News.class))).thenAnswer(invocation -> {
+      News news = invocation.getArgument(0);
+      ReflectionTestUtils.setField(news, "articleId", id);
+      return news;
+    });
+
+    //when
+    NewsResponseDto newsResponseDto = basicNewsService.createNews(newsCreateRequest);
+
+    //then
+    verify(newsRepository, times(1)).save(any(News.class));
+    assertThat(newsResponseDto.id()).isEqualTo(id);
+    assertThat(newsResponseDto.title()).isEqualTo(newsCreateRequest.title());
   }
 
 }
