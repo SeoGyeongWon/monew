@@ -20,12 +20,16 @@ public class BasicNewsService implements NewsService {
   @Override
   public NewsResponseDto createNews(NewsCreateRequest newsCreateRequest) {
 
+    Optional<News> existing = newsRepository.findByResourceLink(newsCreateRequest.resourceLink());
+    if(existing.isPresent()) {
+      throw new SameResourceLink();
+    }
     //엔티티
     News news = News.builder()
         .source(newsCreateRequest.source())
         .resourceLink(newsCreateRequest.resourceLink())
         .title(newsCreateRequest.title())
-        .postDate(LocalDateTime.parse(newsCreateRequest.postDate()))
+        .postDate(newsCreateRequest.postDate())
         .overview(newsCreateRequest.overView())
         .build();
 
