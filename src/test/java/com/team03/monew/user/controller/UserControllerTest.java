@@ -44,8 +44,9 @@ class UserControllerTest {
                 "test123!@#"
         );
 
+        UUID testId = UUID.randomUUID();
         UserDto response = UserDto.builder()
-                .id(UUID.randomUUID())
+                .id(testId)
                 .email(request.getEmail())
                 .nickname(request.getNickname())
                 .createdAt(LocalDateTime.now())
@@ -59,7 +60,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(response.getId().toString()))
+                .andExpect(jsonPath("$.id").value(testId.toString()))
                 .andExpect(jsonPath("$.email").value("test@monew.com"))
                 .andExpect(jsonPath("$.nickname").value("테스터"));
     }
