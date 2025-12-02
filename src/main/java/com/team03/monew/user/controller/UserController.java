@@ -21,7 +21,11 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다.")
+    @Operation(
+            operationId = "register",
+            summary = "회원가입", 
+            description = "새로운 사용자를 등록합니다."
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 (이메일 중복, 유효성 검사 실패)"),
@@ -30,7 +34,7 @@ public class UserController {
     })
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@Valid @RequestBody UserRegisterRequest request) {
-        UserDto response = userService.signUp(request);
+        UserDto response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
