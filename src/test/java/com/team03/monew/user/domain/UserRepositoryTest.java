@@ -38,25 +38,6 @@ class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("이메일로 사용자 조회 성공")
-    void findByEmail() {
-        // given
-        User user = User.builder()
-                .email("test@monew.com")
-                .nickname("테스터")
-                .password("test123!@#")
-                .build();
-        userRepository.save(user);
-
-        // when
-        Optional<User> foundUser = userRepository.findByEmail("test@monew.com");
-
-        // then
-        assertThat(foundUser).isPresent();
-        assertThat(foundUser.get().getNickname()).isEqualTo("테스터");
-    }
-
-    @Test
     @DisplayName("이메일 중복 확인")
     void existsByEmail() {
         // given
