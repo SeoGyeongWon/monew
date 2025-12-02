@@ -28,7 +28,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("회원가입 성공")
-    void signUp_success() {
+    void register_success() {
         // given
         UserRegisterRequest request = new UserRegisterRequest(
                 "test@monew.com",
@@ -46,7 +46,7 @@ class UserServiceTest {
         given(userRepository.save(any(User.class))).willReturn(user);
 
         // when
-        UserDto response = userService.signUp(request);
+        UserDto response = userService.register(request);
         
         // then
         assertThat(response.getEmail()).isEqualTo(request.getEmail());
@@ -57,7 +57,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("회원가입 실패 - 이메일 중복")
-    void signUp_fail_duplicateEmail() {
+    void register_fail_duplicateEmail() {
         // given
         UserRegisterRequest request = new UserRegisterRequest(
                 "test@monew.com",
@@ -68,7 +68,7 @@ class UserServiceTest {
         given(userRepository.existsByEmail(request.getEmail())).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> userService.signUp(request))
+        assertThatThrownBy(() -> userService.register(request))
                 .isInstanceOf(DuplicateEmailException.class)
                 .hasMessage("이미 사용 중인 이메일입니다.");
     }
