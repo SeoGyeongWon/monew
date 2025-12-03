@@ -55,7 +55,7 @@ class UserControllerTest {
         given(userService.register(any(UserRegisterRequest.class))).willReturn(response);
 
         // when ,then
-        mockMvc.perform(post("/api/users/register")
+        mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
