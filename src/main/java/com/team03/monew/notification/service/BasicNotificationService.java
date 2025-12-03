@@ -37,7 +37,7 @@ public class BasicNotificationService implements NotificationService {
     @Transactional(readOnly = true)
     public CursorPageResponseNotificationDto getUncheckedNotifications(UUID userId, int size) {
         Slice<Notification> slice = notificationRepository.findNotifications(userId, size);
-        return convertToDto(slice, size);
+        return CursorPageResponseNotificationDto.from(slice, size);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class BasicNotificationService implements NotificationService {
                 cursor,
                 size
         );
-        return convertToDto(slice, size);
+        return CursorPageResponseNotificationDto.from(slice, size);
     }
 
     @Override
@@ -65,27 +65,4 @@ public class BasicNotificationService implements NotificationService {
     public void markAllAsChecked(UUID userId) {
     }
 
-    private CursorPageResponseNotificationDto convertToDto(Slice<Notification> slice, int size) {
-        List<NotificationDto> content = slice.getContent().stream()
-                .map(NotificationDto::from)
-                .toList();
-
-        String nextCursor = null;
-        String nextAfter = null;
-
-        if (slice.hasNext() && !content.isEmpty()) {
-            NotificationDto lastDto = content.get(content.size() - 1);
-            nextCursor = lastDto.creationAt().toString();
-            nextAfter = lastDto.creationAt().toString();
-        }
-
-        return new CursorPageResponseNotificationDto(
-                content,
-                nextCursor,
-                nextAfter,
-                size,
-                null,  // Slice는 totalElements 제공 안 함
-                slice.hasNext()
-        );
-    }
 }
