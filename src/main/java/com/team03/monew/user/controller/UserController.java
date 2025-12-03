@@ -32,7 +32,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "이메일 중복"),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<UserDto> register(@Valid @RequestBody UserRegisterRequest request) {
         UserDto response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
