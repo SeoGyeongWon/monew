@@ -53,4 +53,18 @@ public class InterestController {
         InterestDto response = interestService.interestUpdate(interestId,request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    //3 관심사 목록 조회 추가
+    @GetMapping
+    public ResponseEntity<CursorPageResponseInterestDto> interestList(
+            @NotNull
+            @RequestParam(name = "Monew-Request-User-ID")
+            UUID userId,
+            @Valid
+            @ModelAttribute
+            InterestSearchRequest request
+    ){
+        CursorPageResponseInterestDto response = interestService.interestList(userId,request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
