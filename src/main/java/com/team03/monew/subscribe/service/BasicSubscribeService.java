@@ -39,9 +39,9 @@ public class BasicSubscribeService implements SubscribeService {
                 .userId(userId)
                 .interestId(interestId)
                 .build();
-
+        interest.subscribeAdd();
         subscribeRepository.save(subscribe);
-
+        interestRepository.save(interest);
         return subscribeMapper.toDto(subscribe,interest);
     }
 
