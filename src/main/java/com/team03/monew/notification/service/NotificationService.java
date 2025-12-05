@@ -32,4 +32,6 @@ public interface NotificationService {
     // 모든 미확인 알림 일괄 확인 처리
     void markAllAsChecked(UUID userId);
 
+    // 알림 확인 처리
+    void markAsChecked(UUID notificationId, UUID userId);
 }

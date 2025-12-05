@@ -101,7 +101,8 @@ public class Notification {
         return isChecked && creationAt.isBefore(LocalDateTime.now().minusWeeks(1));
     }
 
-    public Notification check() {
+    // 알림 확인 수정 (지워야 하나?)
+    public void check() {
         this.isChecked = true;
         return this;
     }

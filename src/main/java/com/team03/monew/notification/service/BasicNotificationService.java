@@ -64,12 +64,20 @@ public class BasicNotificationService implements NotificationService {
 
     @Override
     @Transactional
-    public void markAsChecked(Long notificationId, UUID userId) {
+    public void markAllAsChecked(UUID userId) {
+        int update = notificationRepository.markAllAsChecked(userId);
+
+        //if (update == 0) { log.info("확인된 알림 없음, userId: {}", userId); }
     }
 
     @Override
     @Transactional
-    public void markAllAsChecked(UUID userId) {
+    public void markAsChecked(UUID notificationId, UUID userId) {
+        int updateCount = notificationRepository.markAsChecked(notificationId, userId);
+
+        if (updateCount == 0) {
+            throw new IllegalArgumentException("[알림] 확인 : 찾을 수 없거나 없습니다. userId: " + userId);
+        }
     }
 
 }
