@@ -92,4 +92,13 @@ public class InterestController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    //6 관심사 물리 삭제 추가
+    @DeleteMapping("/{interestId}")
+    public ResponseEntity<Void> interestDelete(
+            @PathVariable
+            UUID interestId
+    ) throws NoSuchObjectException {
+        interestService.interestDelete(interestId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
