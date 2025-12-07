@@ -30,4 +30,6 @@ public interface NewsService {
       int limit
   );
 
+  // 뉴스 단건 조회
+  NewsDto getDetailNews(UUID articleId, UUID userId);
 }

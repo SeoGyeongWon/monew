@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BasicNewsService implements NewsService {
 
   private final NewsRepository newsRepository;
+  private final NewsViewsService newsViewsService;
 
   @Override
   public CursorPageResponseArticleDto<NewsDto> findNews(
@@ -53,6 +54,7 @@ public class BasicNewsService implements NewsService {
         limit
     );
   }
+
 
   //뉴스 저장(등록)
   @Transactional
@@ -103,4 +105,17 @@ public class BasicNewsService implements NewsService {
     newsRepository.delete(news);
   }
 
+  // 뉴스 단건 조회
+  @Override
+  public NewsDto getDetailNews(UUID articleId, UUID userId) {
+
+    // 뉴스 기사 없을시 에러 처리
+    News news =  newsRepository.findById(articleId)
+        .orElseThrow(NewsNotFound::new);
+
+    //초기 읽은 여부
+    boolean viewedByMe = newsViewsService.isRead(news,userId);
+
+    return NewsDto.from(news,viewedByMe);
+  }
 }
