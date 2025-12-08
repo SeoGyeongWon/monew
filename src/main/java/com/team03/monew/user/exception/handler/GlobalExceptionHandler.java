@@ -2,6 +2,8 @@ package com.team03.monew.user.exception.handler;
 
 import com.team03.monew.user.exception.BusinessException;
 import com.team03.monew.user.exception.DuplicateEmailException;
+import com.team03.monew.user.exception.InvalidPasswordException;
+import com.team03.monew.user.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,32 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
+    // 사용자 없음 예외 - 401 Unauthorized
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+        ErrorResponse response = new ErrorResponse(
+                e.getErrorCode().getCode(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
+    }
+
+    // 비밀번호 불일치 예외 - 401 Unauthorized
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPasswordException(InvalidPasswordException e) {
+        ErrorResponse response = new ErrorResponse(
+                e.getErrorCode().getCode(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(response);
     }
 

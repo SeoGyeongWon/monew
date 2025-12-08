@@ -1,5 +1,7 @@
 package com.team03.monew.user.controller;
 
+import com.team03.monew.user.dto.UserLoginRequest;
+import com.team03.monew.user.dto.UserLoginResponse;
 import com.team03.monew.user.dto.UserRegisterRequest;
 import com.team03.monew.user.dto.UserDto;
 import com.team03.monew.user.service.UserService;
@@ -12,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-// fix 
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -32,10 +34,27 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "이메일 중복"),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<UserDto> register(@Valid @RequestBody UserRegisterRequest request) {
         UserDto response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            operationId = "login",
+            summary = "로그인",
+            description = "사용자 로그인을 처리합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 (입력값 검증 실패)"),
+            @ApiResponse(responseCode = "401", description = "로그인 실패 (이메일 또는 비밀번호 불일치)"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest request) {
+        UserLoginResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
 
 }
