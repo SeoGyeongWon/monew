@@ -142,7 +142,12 @@ class UserControllerTest {
         );
 
         UUID testId = UUID.randomUUID();
-        UserLoginResponse response = new UserLoginResponse(testId);
+        UserDto response = new UserDto(
+                testId,
+                request.email(),
+                "테스터",
+                LocalDateTime.now()
+        );
 
         given(userService.login(any(UserLoginRequest.class))).willReturn(response);
 
@@ -152,7 +157,9 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value(testId.toString()));
+                .andExpect(jsonPath("$.id").value(testId.toString()))
+                .andExpect(jsonPath("$.email").value("test@monew.com"))
+                .andExpect(jsonPath("$.nickname").value("테스터"));
     }
 
     @Test
