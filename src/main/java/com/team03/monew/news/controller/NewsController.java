@@ -84,4 +84,12 @@ public class NewsController {
   public void deleteNewsPhysical(@PathVariable UUID articleId) {
     newsService.deleteNews_physical(new NewsDeleteRequest(articleId));
   }
+
+  // 출처 목록 조회
+  // 이것은 어떤 기능을 하는지 잘 모르겠습니다.
+  // 스웨거 상 작성되어있어 추가 했습니다.
+  @GetMapping("/source")
+  public NewsSourceType[] getAllSources() {
+    return NewsSourceType.values();
+  }
 }
