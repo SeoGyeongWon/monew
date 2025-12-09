@@ -97,7 +97,8 @@ public class News {
       String overview,
       long viewCount,
       long commentCount,
-      boolean isDelete
+      boolean isDelete,
+      Interest interest
   )
   {
     this.source = source;
@@ -108,6 +109,7 @@ public class News {
     this.viewCount = viewCount;
     this.commentCount = commentCount;
     this.isDelete = isDelete;
+    this.interest = interest;
   }
 
   // 읽은 수 증가
