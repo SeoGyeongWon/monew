@@ -1,30 +1,27 @@
 package com.team03.monew.web.controller;
 
-import com.team03.monew.interest.domain.Interest;
 import com.team03.monew.interest.dto.*;
 import com.team03.monew.interest.service.InterestService;
 import com.team03.monew.subscribe.dto.SubscribeDto;
 import com.team03.monew.subscribe.service.SubscribeService;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
+import com.team03.monew.web.controller.api.InterestApi;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Mutability;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.rmi.NoSuchObjectException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/interests")
 @RequiredArgsConstructor
-public class InterestController {
+public class InterestController implements InterestApi {
 
     private final InterestService interestService;
     private final SubscribeService subscribeService;
@@ -57,13 +54,22 @@ public class InterestController {
     //3 관심사 목록 조회 추가
     @GetMapping
     public ResponseEntity<CursorPageResponseInterestDto> interestList(
-            @NotNull
-            @RequestParam(name = "Monew-Request-User-ID")
-            UUID userId,
-            @Valid
-            @ModelAttribute
-            InterestSearchRequest request
+            @RequestParam String keyword,
+            @RequestParam String orderBy,
+            @RequestParam String direction,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(required = false) LocalDateTime after,
+            @RequestParam int limit,
+            @RequestParam(name = "Monew-Request-User-ID",required = false) UUID userId
     ){
+        InterestSearchRequest request = new InterestSearchRequest(
+                keyword,
+                orderBy,
+                direction,
+                cursor,
+                after.toString(),
+                limit
+        );
         CursorPageResponseInterestDto response = interestService.interestList(userId,request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
