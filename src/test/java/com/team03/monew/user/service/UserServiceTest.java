@@ -1,9 +1,13 @@
 package com.team03.monew.user.service;
 
 import com.team03.monew.user.exception.DuplicateEmailException;
+import com.team03.monew.user.exception.InvalidPasswordException;
+import com.team03.monew.user.exception.UserNotFoundException;
 import com.team03.monew.user.domain.User;
+import com.team03.monew.user.dto.UserLoginRequest;
 import com.team03.monew.user.dto.UserRegisterRequest;
 import com.team03.monew.user.dto.UserDto;
+import com.team03.monew.user.mapper.UserMapper;
 import com.team03.monew.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,6 +28,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserMapper userMapper;
 
     @InjectMocks
     private UserService userService;
@@ -49,8 +58,8 @@ class UserServiceTest {
         UserDto response = userService.register(request);
         
         // then
-        assertThat(response.getEmail()).isEqualTo(request.getEmail());
-        assertThat(response.getNickname()).isEqualTo(request.getNickname());
+        assertThat(response.email()).isEqualTo(request.getEmail());
+        assertThat(response.nickname()).isEqualTo(request.getNickname());
         verify(userRepository).existsByEmail(request.getEmail());
         verify(userRepository).save(any(User.class));
     }
@@ -71,6 +80,80 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.register(request))
                 .isInstanceOf(DuplicateEmailException.class)
                 .hasMessage("이미 사용 중인 이메일입니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 성공")
+    void login_success() {
+        // given
+        String email = "test@monew.com";
+        String password = "test123!@#";
+
+        UserLoginRequest request = new UserLoginRequest(email, password);
+
+        User user = User.builder()
+                .email(email)
+                .nickname("테스터")
+                .password(password)
+                .build();
+
+        UserDto expectedDto = new UserDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getCreatedAt()
+        );
+
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+        given(userMapper.toDto(user)).willReturn(expectedDto);
+
+        // when
+        UserDto response = userService.login(request);
+
+        // then
+        assertThat(response.id()).isEqualTo(user.getId());
+        assertThat(response.email()).isEqualTo(email);
+        assertThat(response.nickname()).isEqualTo("테스터");
+        verify(userRepository).findByEmail(email);
+        verify(userMapper).toDto(user);
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 사용자 없음")
+    void login_fail_userNotFound() {
+        // given
+        UserLoginRequest request = new UserLoginRequest("test@monew.com", "test123!@#");
+
+        given(userRepository.findByEmail(request.email())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> userService.login(request))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("사용자를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 비밀번호 불일치")
+    void login_fail_invalidPassword() {
+        // given
+        String email = "test@monew.com";
+        String correctPassword = "test123!@#";
+        String wrongPassword = "wrong123!@#";
+
+        UserLoginRequest request = new UserLoginRequest(email, wrongPassword);
+
+        User user = User.builder()
+                .email(email)
+                .nickname("테스터")
+                .password(correctPassword)
+                .build();
+
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+
+        // when & then
+        assertThatThrownBy(() -> userService.login(request))
+                .isInstanceOf(InvalidPasswordException.class)
+                .hasMessage("비밀번호가 일치하지 않습니다.");
     }
 
 }

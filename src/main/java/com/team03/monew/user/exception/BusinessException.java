@@ -1,19 +1,16 @@
 package com.team03.monew.user.exception;
 
-import lombok.Getter;
+import com.team03.monew.common.customerror.ErrorCode;
+import com.team03.monew.common.customerror.MonewException;
 
-@Getter
-public class BusinessException extends RuntimeException {
-
-    private final ErrorCode errorCode;
+public class BusinessException extends MonewException {
 
     public BusinessException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+        super(errorCode);
     }
 
-    public BusinessException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+    public BusinessException(ErrorCode errorCode, String customMessage) {
+        super(errorCode);
+        this.addDetail("customMessage", customMessage);
     }
 }
