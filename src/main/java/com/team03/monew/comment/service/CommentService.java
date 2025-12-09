@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public interface CommentService {
     CursorPageResponseCommentDto getCommentList(CursorPageRequestCommentDto request);
+    void updateComment(UUID commentId, CommentUserIdRequest userId, CommentUpdateRequest content);
     void deleteComment(UUID commentId);
     void deleteCommentHard(UUID commentId);
 }

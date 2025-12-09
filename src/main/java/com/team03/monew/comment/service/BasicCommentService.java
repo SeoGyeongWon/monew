@@ -73,6 +73,22 @@ public class BasicCommentService implements CommentService{
         );
     }
 
+    @Transactional
+    public void updateComment(UUID commentId, CommentUserIdRequest userId, CommentUpdateRequest content) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글 찾을 수 없음"));
+
+        if (comment.isDeleted()) {
+            throw new IllegalArgumentException("삭제된 댓글");
+        }
+
+        if (!comment.getUserId().equals(userId.userId())) {
+            throw new IllegalArgumentException("본인 댓글만 가능");
+        }
+
+        comment.changeContent(content.content());
+    }
+
     // 논리 삭제
     @Transactional
     public void deleteComment(UUID commentId) {
