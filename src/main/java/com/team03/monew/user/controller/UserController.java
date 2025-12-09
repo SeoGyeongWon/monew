@@ -1,7 +1,6 @@
 package com.team03.monew.user.controller;
 
 import com.team03.monew.user.dto.UserLoginRequest;
-import com.team03.monew.user.dto.UserLoginResponse;
 import com.team03.monew.user.dto.UserRegisterRequest;
 import com.team03.monew.user.dto.UserDto;
 import com.team03.monew.user.service.UserService;
@@ -52,8 +51,8 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest request) {
-        UserLoginResponse response = userService.login(request);
+    public ResponseEntity<UserDto> login(@Valid @RequestBody UserLoginRequest request) {
+        UserDto response = userService.login(request);
         return ResponseEntity.ok(response);
     }
 

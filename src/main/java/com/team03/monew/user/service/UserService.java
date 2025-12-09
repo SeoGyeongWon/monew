@@ -5,7 +5,6 @@ import com.team03.monew.user.exception.InvalidPasswordException;
 import com.team03.monew.user.exception.UserNotFoundException;
 import com.team03.monew.user.domain.User;
 import com.team03.monew.user.dto.UserLoginRequest;
-import com.team03.monew.user.dto.UserLoginResponse;
 import com.team03.monew.user.dto.UserRegisterRequest;
 import com.team03.monew.user.dto.UserDto;
 import com.team03.monew.user.mapper.UserMapper;
@@ -43,7 +42,7 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
-    public UserLoginResponse login(UserLoginRequest request) {
+    public UserDto login(UserLoginRequest request) {
         // 이메일로 사용자 조회
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(UserNotFoundException::new);
@@ -59,7 +58,7 @@ public class UserService {
         }
 
         // 로그인 응답 반환
-        return userMapper.toLoginResponse(user);
+        return userMapper.toDto(user);
     }
 
 }

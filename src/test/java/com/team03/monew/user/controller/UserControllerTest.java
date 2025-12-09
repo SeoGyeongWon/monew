@@ -5,7 +5,6 @@ import com.team03.monew.user.exception.DuplicateEmailException;
 import com.team03.monew.user.exception.InvalidPasswordException;
 import com.team03.monew.user.exception.UserNotFoundException;
 import com.team03.monew.user.dto.UserLoginRequest;
-import com.team03.monew.user.dto.UserLoginResponse;
 import com.team03.monew.user.dto.UserRegisterRequest;
 import com.team03.monew.user.dto.UserDto;
 import com.team03.monew.user.service.UserService;
@@ -88,7 +87,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value("U002"))
+                .andExpect(jsonPath("$.code").value("DUPLICATE_EMAIL"))
                 .andExpect(jsonPath("$.message").value("이미 사용 중인 이메일입니다."));
     }
 
@@ -108,8 +107,8 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("V001"))
-                .andExpect(jsonPath("$.errors.email").exists());
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.details.email").exists());
     }
 
     @Test
@@ -128,8 +127,8 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("V001"))
-                .andExpect(jsonPath("$.errors.nickname").exists());
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.details.nickname").exists());
     }
 
     @Test
@@ -180,7 +179,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value("U001"))
+                .andExpect(jsonPath("$.code").value("USER_NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("사용자를 찾을 수 없습니다."));
     }
 
@@ -202,7 +201,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value("U003"))
+                .andExpect(jsonPath("$.code").value("INVALID_PASSWORD"))
                 .andExpect(jsonPath("$.message").value("비밀번호가 일치하지 않습니다."));
     }
 
@@ -221,8 +220,8 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("V001"))
-                .andExpect(jsonPath("$.errors.email").exists());
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.details.email").exists());
     }
 
 }

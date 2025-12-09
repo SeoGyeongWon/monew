@@ -5,7 +5,6 @@ import com.team03.monew.user.exception.InvalidPasswordException;
 import com.team03.monew.user.exception.UserNotFoundException;
 import com.team03.monew.user.domain.User;
 import com.team03.monew.user.dto.UserLoginRequest;
-import com.team03.monew.user.dto.UserLoginResponse;
 import com.team03.monew.user.dto.UserRegisterRequest;
 import com.team03.monew.user.dto.UserDto;
 import com.team03.monew.user.mapper.UserMapper;
@@ -98,15 +97,25 @@ class UserServiceTest {
                 .password(password)
                 .build();
 
+        UserDto expectedDto = new UserDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getCreatedAt()
+        );
+
         given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
-        given(userMapper.toLoginResponse(user)).willReturn(new UserLoginResponse(user.getId()));
+        given(userMapper.toDto(user)).willReturn(expectedDto);
 
         // when
-        UserLoginResponse response = userService.login(request);
+        UserDto response = userService.login(request);
 
         // then
-        assertThat(response.userId()).isEqualTo(user.getId());
+        assertThat(response.id()).isEqualTo(user.getId());
+        assertThat(response.email()).isEqualTo(email);
+        assertThat(response.nickname()).isEqualTo("테스터");
         verify(userRepository).findByEmail(email);
+        verify(userMapper).toDto(user);
     }
 
     @Test
