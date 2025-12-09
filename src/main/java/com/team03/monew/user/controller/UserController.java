@@ -71,13 +71,44 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "닉네임 중복"),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
-    @PutMapping
+    @PutMapping("/{userId}")
     public ResponseEntity<UserDto> update(
-            @RequestHeader("MoNew-Request-User-ID") String userIdHeader,
+            @PathVariable UUID userId,
             @Valid @RequestBody UserUpdateRequest request) {
-        UUID userId = UUID.fromString(userIdHeader);
         UserDto response = userService.update(userId, request);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            operationId = "delete",
+            summary = "사용자 논리 삭제",
+            description = "사용자를 논리 삭제합니다. 인증 헤더(MoNew-Request-User-ID)가 필요합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (사용자를 찾을 수 없음)"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID userId) {
+        userService.delete(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            operationId = "hardDelete",
+            summary = "사용자 물리 삭제",
+            description = "사용자를 물리 삭제합니다. 인증 헤더(MoNew-Request-User-ID)가 필요합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (사용자를 찾을 수 없음)"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @DeleteMapping("/{userId}/hard")
+    public ResponseEntity<Void> hardDelete(@PathVariable UUID userId) {
+        userService.hardDelete(userId);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public record UserUpdateRequest(
         @Schema(description = "닉네임", example = "새로운닉네임", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "닉네임은 필수입니다.")
-        @Size(min = 2, max = 50, message = "닉네임은 2자 이상 50자 이하여야 합니다.")
+        @Size(min = 1, max = 20, message = "닉네임은 1자 이상 20자 이하여야 합니다.")
         String nickname
 ) {
 }

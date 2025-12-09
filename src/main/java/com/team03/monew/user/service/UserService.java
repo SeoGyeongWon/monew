@@ -14,9 +14,11 @@ import java.util.UUID;
 import com.team03.monew.user.mapper.UserMapper;
 import com.team03.monew.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -91,6 +93,51 @@ public class UserService {
 
         // 응답 반환
         return userMapper.toDto(updatedUser);
+    }
+
+    @Transactional
+    public void delete(UUID userId) {
+        // 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        // 이미 삭제된 사용자인지 체크
+        if (user.isDeleted()) {
+            throw new UserNotFoundException();
+        }
+
+        // 논리 삭제
+        user.delete();
+
+        // 저장
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void hardDelete(UUID userId) {
+        // 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        // 사용자 물리 삭제 (사용자 도메인 내에서만 처리)
+        userRepository.delete(user);
+        
+        log.info("사용자 물리 삭제 완료: userId={}", userId);
+    }
+
+    @Transactional
+    public void hardDeleteExpiredUsers() {
+        // 프로토타입: 논리 삭제 후 5분 경과한 사용자 조회
+        java.time.LocalDateTime thresholdTime = java.time.LocalDateTime.now().minusMinutes(5);
+        java.util.List<User> usersToDelete = userRepository.findUsersToHardDelete(thresholdTime);
+        
+        for (User user : usersToDelete) {
+            hardDelete(user.getId());
+        }
+        
+        if (!usersToDelete.isEmpty()) {
+            log.info("자동 물리 삭제 완료: {}명의 사용자 삭제", usersToDelete.size());
+        }
     }
 
 }
