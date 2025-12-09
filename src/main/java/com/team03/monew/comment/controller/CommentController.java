@@ -59,11 +59,14 @@ public class CommentController {
     }
 
     @PatchMapping("{commentId}")
-    public void update(
+    public ResponseEntity<Void> update(
             @PathVariable UUID commentId,
             @RequestParam CommentUserIdRequest requestParam,
             @RequestBody CommentUpdateRequest requestBody
-    ) {}
+    ) {
+        commentService.updateComment(commentId, requestParam, requestBody);
+        return ResponseEntity.noContent().build();
+    }
 
     @DeleteMapping("{commentId}/hard")
     public ResponseEntity<Void> deleteHard(
