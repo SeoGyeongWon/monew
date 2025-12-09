@@ -1,12 +1,16 @@
 package com.team03.monew.user.service;
 
 import com.team03.monew.user.exception.DuplicateEmailException;
+import com.team03.monew.user.exception.DuplicateNicknameException;
 import com.team03.monew.user.exception.InvalidPasswordException;
 import com.team03.monew.user.exception.UserNotFoundException;
 import com.team03.monew.user.domain.User;
 import com.team03.monew.user.dto.UserLoginRequest;
 import com.team03.monew.user.dto.UserRegisterRequest;
+import com.team03.monew.user.dto.UserUpdateRequest;
 import com.team03.monew.user.dto.UserDto;
+
+import java.util.UUID;
 import com.team03.monew.user.mapper.UserMapper;
 import com.team03.monew.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +63,34 @@ public class UserService {
 
         // 로그인 응답 반환
         return userMapper.toDto(user);
+    }
+
+    @Transactional
+    public UserDto update(UUID userId, UserUpdateRequest request) {
+        // 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        // 논리 삭제된 사용자 체크
+        if (user.isDeleted()) {
+            throw new UserNotFoundException();
+        }
+
+        // 닉네임이 변경되는 경우에만 중복 체크
+        if (!user.getNickname().equals(request.nickname())) {
+            if (userRepository.existsByNickname(request.nickname())) {
+                throw new DuplicateNicknameException();
+            }
+        }
+
+        // 닉네임 업데이트
+        user.updateNickname(request.nickname());
+
+        // 저장
+        User updatedUser = userRepository.save(user);
+
+        // 응답 반환
+        return userMapper.toDto(updatedUser);
     }
 
 }

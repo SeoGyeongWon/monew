@@ -2,8 +2,11 @@ package com.team03.monew.user.controller;
 
 import com.team03.monew.user.dto.UserLoginRequest;
 import com.team03.monew.user.dto.UserRegisterRequest;
+import com.team03.monew.user.dto.UserUpdateRequest;
 import com.team03.monew.user.dto.UserDto;
 import com.team03.monew.user.service.UserService;
+
+import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -53,6 +56,27 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@Valid @RequestBody UserLoginRequest request) {
         UserDto response = userService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            operationId = "update",
+            summary = "사용자 정보 수정",
+            description = "사용자 닉네임을 수정합니다. 인증 헤더(MoNew-Request-User-ID)가 필요합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 (유효성 검사 실패)"),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (사용자를 찾을 수 없음)"),
+            @ApiResponse(responseCode = "409", description = "닉네임 중복"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @PutMapping
+    public ResponseEntity<UserDto> update(
+            @RequestHeader("MoNew-Request-User-ID") String userIdHeader,
+            @Valid @RequestBody UserUpdateRequest request) {
+        UUID userId = UUID.fromString(userIdHeader);
+        UserDto response = userService.update(userId, request);
         return ResponseEntity.ok(response);
     }
 
