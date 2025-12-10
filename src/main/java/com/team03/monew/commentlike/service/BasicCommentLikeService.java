@@ -30,12 +30,14 @@ public class BasicCommentLikeService implements CommentLikeService{
     @Override
     @Transactional
     public void like(UUID commentId, UUID userId) {
+        if (commentLikeRepository.existsByCommentIdAndUserId(commentId, userId)) {
+            throw new IllegalArgumentException("이미 좋아요");
+        }
+
         CommentDto comment = commentService.findByIdAndUserId(commentId, userId);
         UserDto user = userService.findById(userId);
 
-        if (commentLikeRepository.existsByCommentIdAndUserId(commentId, userId)) {
-            throw new IllegalArgumentException("이미 누름");
-        }
+        Long currentCount = commentLikeRepository.countCommentLikeByCommentId(commentId);
 
         CommentLike commentLike = CommentLike.create(
                 userId,
@@ -44,12 +46,12 @@ public class BasicCommentLikeService implements CommentLikeService{
                 comment.userId(),
                 user.nickname(),
                 comment.content(),
-                commentLikeRepository.countCommentLikeByCommentId(commentId),
+                currentCount + 1,
                 comment.createdAt()
         );
 
         commentLikeRepository.save(commentLike);
-
+        commentService.increaseLikeCount(commentId);
         createCommentLikeNotification(comment.userId(), commentId, userId);
     }
 
@@ -71,13 +73,12 @@ public class BasicCommentLikeService implements CommentLikeService{
     @Override
     @Transactional
     public void unlike(UUID commentId, UUID userId) {
-        CommentDto comment = commentService.findByIdAndUserId(commentId, userId);
-
         if (!commentLikeRepository.existsByCommentIdAndUserId(commentId, userId)) {
             throw new IllegalArgumentException("이미 없음");
         }
 
         commentLikeRepository.deleteByCommentIdAndUserId(commentId, userId);
+        commentService.decreaseLikeCount(commentId);
     }
 
     @Override
