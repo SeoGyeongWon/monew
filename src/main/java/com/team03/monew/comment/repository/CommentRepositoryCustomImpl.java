@@ -3,6 +3,7 @@ package com.team03.monew.comment.repository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team03.monew.comment.domain.QComment;
 import com.team03.monew.comment.dto.CommentDto;
@@ -39,7 +40,11 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
                         comment.creationAt
                 ))
                 .from(comment)
-                .leftJoin(user).on(comment.userId.eq(user.userId))
+                .leftJoin(user)
+                    .on(comment.userId.eq(user.id))
+                .leftJoin(commentLike)
+                    .on(commentLike.commentId.eq(comment.id)
+                        .and(commentLike.userId.eq(request.userId())))
                 .where(
                         articleIdEq(request.articleId()),
                         cursorCondition(request),
