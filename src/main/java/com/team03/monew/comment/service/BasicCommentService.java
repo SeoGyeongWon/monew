@@ -161,6 +161,7 @@ public class BasicCommentService implements CommentService{
 
         commentLikeService.like(commentId, userId);
         comment.changeLikeCount(commentLikeService.countByCommentId(commentId));
+        comment.changeLikedByMe(commentLikeService.isLiked(commentId, userId));
         commentRepository.save(comment);
     }
 
@@ -171,6 +172,7 @@ public class BasicCommentService implements CommentService{
 
         commentLikeService.unlike(commentId, userId);
         comment.changeLikeCount(commentLikeService.countByCommentId(commentId));
+        comment.changeLikedByMe(commentLikeService.isLiked(commentId, userId));
         commentRepository.save(comment);
     }
 }

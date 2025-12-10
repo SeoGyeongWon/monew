@@ -50,7 +50,7 @@ public class CommentController {
             @PathVariable UUID commentId,
             @RequestParam CommentUserIdRequest request
     ) {
-        commentService.likeComment(commentId, request.userId());
+        commentService.unlikeComment(commentId, request.userId());
         return ResponseEntity.noContent().build();
     }
 
