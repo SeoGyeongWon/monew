@@ -10,7 +10,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "commentLikes")
+@Table(
+        name = "comment_likes",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"liked_by", "comment_id"})
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentLike {
