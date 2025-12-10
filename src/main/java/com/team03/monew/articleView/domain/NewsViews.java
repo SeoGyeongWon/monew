@@ -27,23 +27,24 @@ import lombok.NoArgsConstructor;
  *  **/
 @Table(name = "article_views",
     uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"userId","articleId"})
+    @UniqueConstraint(columnNames = {"user_id","article_id"})
   }
 )
 public class NewsViews {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  UUID id;
+  @Column(name = "article_views_id")
+  private UUID id;
 
   @ManyToOne
-  @JoinColumn(name = "userId")
+  @JoinColumn(name = "user_id")
   private User user;
 
-  @Column(name = "creationAt",updatable = false)
-  LocalDateTime creationAt;
+  @Column(name = "created_at",updatable = false)
+  private LocalDateTime createdAt;
 
   @ManyToOne
-  @JoinColumn(name = "articleId")
+  @JoinColumn(name = "article_id")
   private News news;
 
 
@@ -54,7 +55,7 @@ public class NewsViews {
 
   @PrePersist
   public void OnCreate() {
-    this.creationAt = LocalDateTime.now();
+    this.createdAt = LocalDateTime.now();
   }
 
 
