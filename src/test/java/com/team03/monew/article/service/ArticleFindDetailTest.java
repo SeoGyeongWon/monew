@@ -7,10 +7,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.team03.monew.article.domain.Article;
+import com.team03.monew.article.exception.ArticleErrorCode;
 import com.team03.monew.articleviews.service.ArticleViewsService;
 import com.team03.monew.article.dto.ArticleDto;
-import com.team03.monew.article.exception.CustomException.ArticleNotFound;
 import com.team03.monew.article.repository.ArticleRepository;
+import com.team03.monew.common.customerror.MonewException;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +56,9 @@ public class ArticleFindDetailTest {
 
     // when & then
     assertThatThrownBy(() -> basicArticleService.getDetailArticle(articleId, userId))
-        .isInstanceOf(ArticleNotFound.class);
+        .isInstanceOf(MonewException.class)
+        .extracting("errorCode")
+        .isEqualTo(ArticleErrorCode.ARTICLE_NOT_FOUND);
 
     // 호출되었는지 확인
     verify(articleRepository).findById(articleId);

@@ -9,13 +9,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.team03.monew.article.exception.ArticleErrorCode;
+import com.team03.monew.common.customerror.MonewException;
 import com.team03.monew.interest.domain.Interest;
 import com.team03.monew.interest.repository.InterestRepository;
 import com.team03.monew.article.domain.Article;
 import com.team03.monew.article.domain.ArticleSourceType;
 import com.team03.monew.article.dto.ArticleCreateRequest;
 import com.team03.monew.article.dto.ArticleResponseDto;
-import com.team03.monew.article.exception.CustomException.SameResourceLink;
 import com.team03.monew.article.fixture.ArticleFixture;
 import com.team03.monew.article.repository.ArticleRepository;
 import java.time.LocalDateTime;
@@ -64,7 +65,9 @@ public class ArticleCreateTest {
 
     //when then
       assertThatThrownBy(()-> basicArticleService.createArticle(articleCreateRequest, interestId))
-        .isInstanceOf(SameResourceLink.class);
+        .isInstanceOf(MonewException.class)
+          .extracting("errorCode")
+          .isEqualTo(ArticleErrorCode.ARTICLE_DUPLICATE_LINK);
 
     verify(articleRepository, times(1)).findByResourceLink(anyString());
     verify(articleRepository, never()).save(any());
