@@ -33,22 +33,27 @@ public class Comment {
     private LocalDateTime creationAt;
 
     @Column(name = "likeCount", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
-    private int likeCount;
+    private Long likeCount;
+
+    @Column(name = "likedByMe", nullable = false, columnDefinition = "FALSE")
+    private boolean likedByMe;
 
     @UpdateTimestamp
     @Column(name = "updateAt", nullable = false)
     private LocalDateTime updateAt;
 
+    // 논리 삭제용 필드 추가
+    @Column(name = "deletedAt", nullable = true)
+    private LocalDateTime deletedAt;
+
     private Comment(
             UUID articleId,
             UUID userId,
-            String content,
-            int likeCount
+            String content
     ) {
         this.articleId = articleId;
         this.userId = userId;
         this.content = content;
-        this.likeCount = likeCount;
     }
 
     public static Comment of(
@@ -56,23 +61,26 @@ public class Comment {
             UUID userId,
             String content
     ) {
-        return new Comment(articleId, userId, content, 0);
+        return new Comment(articleId, userId, content);
     }
 
     public void changeContent(String content) {
         this.content = content;
     }
 
-    public void changeLikeCount(int likeCount) {
+    public void changeLikeCount(Long likeCount) {
         this.likeCount = likeCount;
     }
 
-    public void incrementLikeCount() {
-        this.likeCount++;
+    public void changeLikedByMe(boolean likedByMe) {
+        this.likedByMe = likedByMe;
     }
 
-    public void decrementLikeCount() {
-        this.likeCount--;
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
 }
