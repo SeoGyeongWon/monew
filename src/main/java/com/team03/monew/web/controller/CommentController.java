@@ -1,8 +1,7 @@
-package com.team03.monew.comment.controller;
+package com.team03.monew.web.controller;
 
 import com.team03.monew.comment.dto.*;
 import com.team03.monew.comment.service.CommentService;
-import com.team03.monew.commentLike.service.CommentLikeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
