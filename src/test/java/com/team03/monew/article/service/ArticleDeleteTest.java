@@ -9,9 +9,9 @@ import static org.mockito.Mockito.when;
 
 import com.team03.monew.article.domain.Article;
 import com.team03.monew.article.dto.ArticleDeleteRequest;
-import com.team03.monew.article.exception.CustomException.ArticleCanNotDelete;
-import com.team03.monew.article.exception.CustomException.ArticleNotFound;
+import com.team03.monew.article.exception.ArticleErrorCode;
 import com.team03.monew.article.repository.ArticleRepository;
+import com.team03.monew.common.customerror.MonewException;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,9 @@ public class ArticleDeleteTest {
     ArticleDeleteRequest articleDeleteRequest = new ArticleDeleteRequest(uuid);
 
     assertThatThrownBy(()->articleService.deleteArticle_logical(articleDeleteRequest))
-        .isInstanceOf(ArticleNotFound.class);
+        .isInstanceOf(MonewException.class)
+        .extracting("errorCode")
+        .isEqualTo(ArticleErrorCode.ARTICLE_NOT_FOUND);
   }
 
   // 뉴스 논리적 삭제 성공
@@ -82,7 +84,9 @@ public class ArticleDeleteTest {
 
     // when
     assertThatThrownBy(()-> articleService.deleteArticle_physical(new ArticleDeleteRequest(uuid)))
-        .isInstanceOf(ArticleCanNotDelete.class);
+        .isInstanceOf(MonewException.class)
+        .extracting("errorCode")
+        .isEqualTo(ArticleErrorCode.ARTICLE_CANNOT_DELETE);
 
     // 레포의 delete가 호출되었는가? 확인
     verify(articleRepository,never()).delete(article);
