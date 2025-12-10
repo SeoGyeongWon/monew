@@ -71,14 +71,6 @@ public class Comment {
         this.likeCount = likeCount;
     }
 
-    public void incrementLikeCount() {
-        this.likeCount++;
-    }
-
-    public void decrementLikeCount() {
-        this.likeCount--;
-    }
-
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
     }
