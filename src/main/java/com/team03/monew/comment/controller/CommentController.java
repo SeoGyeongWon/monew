@@ -15,11 +15,9 @@ import java.util.UUID;
 public class CommentController {
 
     private final CommentService commentService;
-    private final CommentLikeService commentLikeService;
 
-    public CommentController(CommentService commentService, CommentLikeService commentLikeService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.commentLikeService = commentLikeService;
     }
 
     @GetMapping
