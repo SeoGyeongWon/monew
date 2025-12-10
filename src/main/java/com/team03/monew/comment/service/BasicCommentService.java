@@ -20,7 +20,6 @@ import java.util.UUID;
 public class BasicCommentService implements CommentService{
 
     private final CommentRepository commentRepository;
-    private final CommentLikeService commentLikeService;
     private final UserService userService;
 
     @Override
@@ -113,11 +112,6 @@ public class BasicCommentService implements CommentService{
         commentRepository.delete(comment);
     }
 
-    private Comment findById(UUID commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글 없음"));
-    }
-
     @Override
     @Transactional(readOnly = true)
     public CommentDto findByIdAndUserId(UUID commentId, UUID userId) {
@@ -136,30 +130,30 @@ public class BasicCommentService implements CommentService{
     }
 
     @Override
-    @Transactional
-    public void likeComment(UUID commentId, UUID userId) {
-        Comment comment = findById(commentId);
-
-        commentLikeService.like(commentId, userId);
-        comment.changeLikeCount(commentLikeService.countByCommentId(commentId));
-        comment.changeLikedByMe(commentLikeService.isLiked(commentId, userId));
-        commentRepository.save(comment);
-    }
-
-    @Override
-    @Transactional
-    public void unlikeComment(UUID commentId, UUID userId) {
-        Comment comment = findById(commentId);
-
-        commentLikeService.unlike(commentId, userId);
-        comment.changeLikeCount(commentLikeService.countByCommentId(commentId));
-        comment.changeLikedByMe(commentLikeService.isLiked(commentId, userId));
-        commentRepository.save(comment);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<CommentActivityDto> topTenByUserId(UUID userId) {
         return commentRepository.findTopTenByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    @Override
+    public Comment findById(UUID commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글 없음"));
+    }
+
+    @Override
+    @Transactional
+    public void increaseLikeCount(UUID commentId) {
+        Comment comment = findById(commentId);
+        comment.increaseLikeCount();
+        commentRepository.save(comment);
+    }
+
+    @Override
+    @Transactional
+    public void decreaseLikeCount(UUID commentId) {
+        Comment comment = findById(commentId);
+        comment.decreaseLikeCount();
+        commentRepository.save(comment);
     }
 }
