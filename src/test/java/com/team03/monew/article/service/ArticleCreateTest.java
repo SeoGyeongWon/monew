@@ -147,7 +147,7 @@ public class ArticleCreateTest {
 
     when(articleRepository.save(any(Article.class))).thenAnswer(invocation -> {
       Article article = invocation.getArgument(0);
-      ReflectionTestUtils.setField(article, "articleId", id);
+      ReflectionTestUtils.setField(article, "id", id);
       return article;
     });
 

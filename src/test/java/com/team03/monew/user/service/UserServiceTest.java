@@ -51,8 +51,16 @@ class UserServiceTest {
                 .password(request.getPassword())
                 .build();
 
+        UserDto expectedDto = new UserDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getCreatedAt()
+        );
+
         given(userRepository.existsByEmail(request.getEmail())).willReturn(false);
         given(userRepository.save(any(User.class))).willReturn(user);
+        given(userMapper.toDto(any(User.class))).willReturn(expectedDto);
 
         // when
         UserDto response = userService.register(request);
