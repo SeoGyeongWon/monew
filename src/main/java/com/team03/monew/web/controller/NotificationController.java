@@ -3,9 +3,11 @@ package com.team03.monew.web.controller;
 import com.team03.monew.notification.dto.CursorPageResponseNotificationDto;
 import com.team03.monew.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -17,15 +19,15 @@ public class NotificationController {
 
     @GetMapping
     public ResponseEntity<CursorPageResponseNotificationDto> getUncheckedNotifications(
-            @RequestParam() String cursor,
-            @RequestParam() String after,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(required = false) LocalDateTime after,
             @RequestParam(defaultValue = "50") int limit,
             @RequestParam() UUID userId
     ) {
         if (cursor == null) {
-            return ResponseEntity.ok(notificationService.getUncheckedNotifications(userId, limit));
+            return ResponseEntity.ok(notificationService.getUncheckedNotifications(userId, limit, after));
         }
-        return ResponseEntity.ok(notificationService.getUncheckedNotificationsWithCursor(userId, cursor, limit));
+        return ResponseEntity.ok(notificationService.getUncheckedNotificationsWithCursor(userId, cursor, limit, after));
     }
 
     @PatchMapping
