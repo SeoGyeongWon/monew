@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/articles")
@@ -33,10 +35,17 @@ public class ArticleController implements ArticleApi {
   // 뉴스 등록
   @PostMapping
   public ResponseEntity<ArticleResponseDto> createArticle(
-      @RequestBody ArticleCreateRequest ArticleCreateRequest,
+      @RequestBody ArticleCreateRequest articleCreateRequest,
       @RequestParam UUID interestId
       ) {
-    ArticleResponseDto response = articleService.createArticle(ArticleCreateRequest, interestId);
+
+    log.info("POST /api/articles 뉴스 등록 요청. title : {}, interestId : {}, resourceLink : {}"
+        ,articleCreateRequest.title(),interestId,articleCreateRequest.resourceLink());
+
+        ArticleResponseDto response = articleService.createArticle(articleCreateRequest, interestId);
+
+    log.info("POST /api/articles 뉴스 등록 응답. created : {}", response != null);
+
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(response);
@@ -57,6 +66,9 @@ public class ArticleController implements ArticleApi {
       @RequestParam(required = false) LocalDateTime after,
       @RequestParam(defaultValue = "50") int limit
   ) {
+
+    log.debug("GET /api/articles 뉴스 목록 조회 요청. orderBy : {}, direction : {}",  orderBy, direction);
+
     CursorPageResponseArticleDto<ArticleDto> result =  articleService.findArticle(
         keyword,
         interestId,
@@ -69,6 +81,13 @@ public class ArticleController implements ArticleApi {
         after,
         limit
     );
+
+    log.debug("GET /api/articles 뉴스 목록 조회 응답. size={}, hasNext={}, nextCursor={}",
+        result.content().size(),
+        result.hasNext(),
+        result.nextCursor()
+    );
+
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(result);
@@ -81,7 +100,13 @@ public class ArticleController implements ArticleApi {
       @PathVariable UUID articleId,
       @RequestParam(required = true) UUID userId
   ){
+
+    log.info("GET /api/articles/{} 뉴스 단편 조회 요청. userId : {}",articleId, userId);
+
     ArticleDto dto  = articleService.getDetailArticle(articleId, userId);
+
+    log.info("GET /api/articles/{} 뉴스 단편 조회 응답. viewedByMe={}", articleId, dto.viewedByMe());
+
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(dto);
@@ -91,7 +116,13 @@ public class ArticleController implements ArticleApi {
   @DeleteMapping("/{articleId}")
   @Override
   public ResponseEntity<Void> deleteArticleLogical(@PathVariable UUID articleId) {
+
+    log.info("DELETE /api/articles/{} 논리 삭제 요청", articleId);
+
     articleService.deleteArticle_logical(new ArticleDeleteRequest(articleId));
+
+    log.info("DELETE /api/articles/{} 논리 삭제 응답.", articleId);
+
     return ResponseEntity
         .status(HttpStatus.NO_CONTENT)
         .build();
@@ -101,7 +132,13 @@ public class ArticleController implements ArticleApi {
   @DeleteMapping("/{articleId}/hard")
   @Override
   public ResponseEntity<Void> deleteArticlePhysical(@PathVariable UUID articleId) {
+
+    log.info("DELETE /api/articles/{}/hard 뉴스 물리 삭제 요청", articleId);
+
     articleService.deleteArticle_physical(new ArticleDeleteRequest(articleId));
+
+    log.info("DELETE /api/articles/{}/hard 뉴스 물리 삭제 응답.", articleId);
+
     return ResponseEntity
         .status(HttpStatus.NO_CONTENT)
         .build();
@@ -117,6 +154,9 @@ public class ArticleController implements ArticleApi {
   // 스웨거 상 작성되어있어 추가 했습니다.
   @GetMapping("/source")
   public ResponseEntity<ArticleSourceType[]> getAllSources() {
+
+    log.debug("GET /api/articles/source");
+
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(ArticleSourceType.values());
