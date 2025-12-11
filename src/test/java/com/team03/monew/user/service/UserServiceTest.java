@@ -33,7 +33,7 @@ class UserServiceTest {
     private UserMapper userMapper;
 
     @InjectMocks
-    private UserService userService;
+    private BasicUserService userService;
 
     @Test
     @DisplayName("회원가입 성공")
@@ -155,5 +155,4 @@ class UserServiceTest {
                 .isInstanceOf(InvalidPasswordException.class)
                 .hasMessage("비밀번호가 일치하지 않습니다.");
     }
-
 }
