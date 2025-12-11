@@ -1,7 +1,7 @@
 package com.team03.monew.articleCollect.infrastructure.parser;
 
 import com.team03.monew.articleCollect.domain.FetchedArticles;
-import com.team03.monew.news.domain.NewsSourceType;
+import com.team03.monew.article.domain.ArticleSourceType;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.stream.XMLInputFactory;
@@ -49,7 +49,7 @@ class HankyungRssParserTest {
     assertNotNull(news.postDate());
     // Hankyung 은 overview 를 title 로 사용
     assertEquals("테스트 기사 제목", news.overview());
-    assertEquals(NewsSourceType.KOREA, news.source());
+    assertEquals(ArticleSourceType.KOREA, news.source());
   }
 
   @Test

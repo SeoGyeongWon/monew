@@ -1,7 +1,7 @@
 package com.team03.monew.articleCollect.infrastructure.parser;
 
 import com.team03.monew.articleCollect.domain.FetchedArticles;
-import com.team03.monew.news.domain.NewsSourceType;
+import com.team03.monew.article.domain.ArticleSourceType;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.stream.XMLInputFactory;
@@ -47,7 +47,7 @@ class ChosunRssParserTest {
     assertNotNull(news);
     assertEquals("조선 기사", news.title());
     assertEquals("요약 내용입니다.", news.overview());
-    assertEquals(NewsSourceType.CHOSUN, news.source());
+    assertEquals(ArticleSourceType.CHOSUN, news.source());
   }
 
   @Test

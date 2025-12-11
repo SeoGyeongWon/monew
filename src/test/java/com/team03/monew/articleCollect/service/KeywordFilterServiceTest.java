@@ -1,9 +1,9 @@
 package com.team03.monew.articleCollect.service;
 
+import com.team03.monew.article.domain.ArticleSourceType;
 import com.team03.monew.interest.domain.Interest;
 import com.team03.monew.interest.repository.InterestRepository;
 import com.team03.monew.articleCollect.domain.FetchedArticles;
-import com.team03.monew.news.domain.NewsSourceType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +43,7 @@ class KeywordFilterServiceTest {
     keywordFilterService.refresh(); // refresh 호출
 
     FetchedArticles news = new FetchedArticles(
-        NewsSourceType.CHOSUN,
+        ArticleSourceType.CHOSUN,
         "url",
         "인공지능이 경제를 바꾼다",
         LocalDateTime.now(),

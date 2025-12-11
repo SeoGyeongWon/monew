@@ -3,6 +3,7 @@ package com.team03.monew.articleCollect.event;
 import com.team03.monew.interest.domain.Interest;
 import com.team03.monew.interest.repository.InterestRepository;
 import com.team03.monew.notification.dto.NotificationCreateDto;
+import com.team03.monew.subscribe.domain.Subscribe;
 import com.team03.monew.subscribe.repository.SubscribeRepository;
 import java.time.Instant;
 import java.util.List;
@@ -48,9 +49,15 @@ class ArticlesNotificationBatchAggregatorTest {
     }
 
     Interest interest = Interest.builder().name("테스트").keywords(List.of("k")).build();
+    ReflectionTestUtils.setField(interest, "id", interestId);
     when(interestRepository.findAllById(Set.of(interestId))).thenReturn(List.of(interest));
-    when(subscribeRepository.findUserIdsByInterestId(interestId))
-        .thenReturn(List.of(UUID.randomUUID(), UUID.randomUUID()));
+    UUID userA = UUID.randomUUID();
+    UUID userB = UUID.randomUUID();
+    when(subscribeRepository.findByInterestIdIn(List.of(interestId)))
+        .thenReturn(List.of(
+            Subscribe.builder().userId(userA).interestId(interestId).build(),
+            Subscribe.builder().userId(userB).interestId(interestId).build()
+        ));
 
     ArgumentCaptor<NotificationCreateDto> captor = ArgumentCaptor.forClass(NotificationCreateDto.class);
 
@@ -73,9 +80,10 @@ class ArticlesNotificationBatchAggregatorTest {
     ReflectionTestUtils.setField(aggregator, "lastFlush", Instant.now().minusMillis(4_000));
 
     Interest interest = Interest.builder().name("시사").keywords(List.of("a")).build();
+    ReflectionTestUtils.setField(interest, "id", interestId);
     when(interestRepository.findAllById(Set.of(interestId))).thenReturn(List.of(interest));
-    when(subscribeRepository.findUserIdsByInterestId(interestId))
-        .thenReturn(List.of(UUID.randomUUID()));
+    when(subscribeRepository.findByInterestIdIn(List.of(interestId)))
+        .thenReturn(List.of(Subscribe.builder().userId(UUID.randomUUID()).interestId(interestId).build()));
 
     // when
     aggregator.checkFlush();
@@ -97,7 +105,7 @@ class ArticlesNotificationBatchAggregatorTest {
     ReflectionTestUtils.setField(aggregator, "lastFlush", Instant.now().minusMillis(4_000));
 
     when(interestRepository.findAllById(Set.of(interestId))).thenReturn(List.of());
-    when(subscribeRepository.findUserIdsByInterestId(interestId)).thenReturn(List.of());
+    when(subscribeRepository.findByInterestIdIn(List.of(interestId))).thenReturn(List.of());
 
     aggregator.checkFlush();
 

@@ -5,7 +5,7 @@ import com.team03.monew.articleCollect.domain.ArticlesFeed;
 import com.team03.monew.articleCollect.exception.RssFetchException;
 import com.team03.monew.articleCollect.exception.RssParserNotFoundException;
 import com.team03.monew.articleCollect.infrastructure.parser.RssParser;
-import com.team03.monew.news.domain.NewsSourceType;
+import com.team03.monew.article.domain.ArticleSourceType;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -43,9 +43,9 @@ class HttpRssClientTest {
     given(chosunParser.supports(any())).willReturn(false);
     given(yonhapParser.supports(any())).willReturn(false);
     given(hankyungParser.supports(any())).willReturn(false);
-    given(chosunParser.supports(NewsSourceType.CHOSUN)).willReturn(true);
-    given(yonhapParser.supports(NewsSourceType.YNA)).willReturn(true);
-    given(hankyungParser.supports(NewsSourceType.KOREA)).willReturn(true);
+    given(chosunParser.supports(ArticleSourceType.CHOSUN)).willReturn(true);
+    given(yonhapParser.supports(ArticleSourceType.YNA)).willReturn(true);
+    given(hankyungParser.supports(ArticleSourceType.KOREA)).willReturn(true);
 
     HttpRssClient client = new HttpRssClient(
         restTemplate,
