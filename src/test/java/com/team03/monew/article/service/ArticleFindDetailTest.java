@@ -2,9 +2,7 @@ package com.team03.monew.article.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.team03.monew.article.domain.Article;
 import com.team03.monew.article.exception.ArticleErrorCode;
@@ -44,7 +42,7 @@ public class ArticleFindDetailTest {
 
     // 가짜 객체 주입
     article = mock(Article.class);
-    when(article.getId()).thenReturn(articleId);
+    lenient().when(article.getId()).thenReturn(articleId);
   }
 
   //뉴스 단편 조회 실패
