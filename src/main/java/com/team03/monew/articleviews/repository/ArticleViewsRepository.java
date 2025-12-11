@@ -17,7 +17,7 @@ public interface ArticleViewsRepository extends JpaRepository<ArticleViews, UUID
   boolean existsByArticleIdAndUserId(UUID articleId,UUID userId);
 
   // 최근 좋아요 조회 (최대 10개)
-  @Query("SELECT av FROM ArticleViews av WHERE av.viewed_by = :userId ORDER BY av.created_at DESC LIMIT 10")
+  @Query("SELECT av FROM ArticleViews av WHERE av.user.id = :userId ORDER BY av.createdAt DESC LIMIT 10")
   List<ArticleViewsActivityDto> findTopTenByUserIdOrderByCreatedAtDesc(
           @Param("user_id") UUID userId
   );

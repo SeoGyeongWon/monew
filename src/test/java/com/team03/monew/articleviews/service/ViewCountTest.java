@@ -2,10 +2,7 @@ package com.team03.monew.articleviews.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.team03.monew.articleviews.domain.ArticleViews;
 import com.team03.monew.articleviews.repository.ArticleViewsRepository;
@@ -39,13 +36,11 @@ public class ViewCountTest {
 
   @BeforeEach
   void setUp() {
-    MockitoAnnotations.openMocks(this);
-
     article = mock(Article.class);
     userId = UUID.randomUUID();
     user = mock(User.class);
 
-    when(article.getId()).thenReturn(UUID.randomUUID());
+    lenient().when(article.getId()).thenReturn(UUID.randomUUID());
   }
 
   // 사용자 id가 널일때

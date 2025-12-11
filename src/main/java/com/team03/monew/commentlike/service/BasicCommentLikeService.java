@@ -30,7 +30,7 @@ public class BasicCommentLikeService implements CommentLikeService{
     @Override
     @Transactional
     public void like(UUID commentId, UUID userId) {
-        if (commentLikeRepository.existsByCommentIdAndUserId(commentId, userId)) {
+        if (commentLikeRepository.existsByCommentIdAndCommentUserId(commentId, userId)) {
             throw new IllegalArgumentException("이미 좋아요");
         }
 
@@ -73,11 +73,11 @@ public class BasicCommentLikeService implements CommentLikeService{
     @Override
     @Transactional
     public void unlike(UUID commentId, UUID userId) {
-        if (!commentLikeRepository.existsByCommentIdAndUserId(commentId, userId)) {
+        if (!commentLikeRepository.existsByCommentIdAndCommentUserId(commentId, userId)) {
             throw new IllegalArgumentException("이미 없음");
         }
 
-        commentLikeRepository.deleteByCommentIdAndUserId(commentId, userId);
+        commentLikeRepository.deleteByCommentIdAndCommentUserId(commentId, userId);
         commentService.decreaseLikeCount(commentId);
     }
 
@@ -88,7 +88,7 @@ public class BasicCommentLikeService implements CommentLikeService{
 
     @Override
     public Boolean isLiked(UUID commentId, UUID userId) {
-        return commentLikeRepository.existsByCommentIdAndUserId(commentId, userId);
+        return commentLikeRepository.existsByCommentIdAndCommentUserId(commentId, userId);
     }
 
     @Override
