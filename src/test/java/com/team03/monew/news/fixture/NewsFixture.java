@@ -5,7 +5,7 @@ import com.team03.monew.news.dto.NewsCreateRequest;
 
 public class NewsFixture {
 
-  public static News newsCreate(NewsCreateRequest newsCreateRequest) {
+    public static News newsCreate(NewsCreateRequest newsCreateRequest) {
     return News.builder()
         .source(newsCreateRequest.source())
         .resourceLink(newsCreateRequest.resourceLink())

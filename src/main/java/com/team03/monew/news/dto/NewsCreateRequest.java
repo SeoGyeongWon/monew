@@ -9,4 +9,6 @@ public record NewsCreateRequest(
     String title,
     LocalDateTime postDate,
     String overView
-) { }
+) {
+
+}
